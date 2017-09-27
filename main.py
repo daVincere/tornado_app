@@ -29,12 +29,22 @@ def verifyDatabase():
 	conn.commit()
 	conn.close()
 
+class GotQuoter(tornado.web.RequestHandler):
+	def get(self):
+		self.write("GET - Welcome to GOT Quoter")
+
+	def post(self):
+		self.write("POST - Welcome to GOT Quoter")
+
+
 class Application(tornado.web.Application):
 	def __init__(self):
 		# constructor function i.e. first run
 		handlers = [
-			(r"/?", MainHandler)
+			(r"/?", MainHandler), 
 			#at the url / main handler is called
+			(r"/api/quotes/?", GotQuoter),
+			(r"/api/quotes/[0-9][0-9][0-9][0-9]/?", GotQuoter),
 			]
 		
 		tornado.web.Application.__init__(self, handlers)
