@@ -3,11 +3,31 @@ from tornado import gen
 from tornado.ioloop import IOLoop
 import tornado.web
 
+# database 
+import sqlite3 as sqlite
 
 class MainHandler(tornado.web.RequestHandler):
 	def get(self):
 		self.write('hello hasime')
 # does this return ""hello hasime"" when it recieves a get request
+
+def verifyDatabase():
+	conn = sqlite.connect("got.db") # conn - connection?
+	c = conn.cursor() # c just a throwaway variable name
+	
+	try:
+		c.execute("SELECT * from got")
+		print "Game of Thrones table already exists"
+	except:
+		print "Creating table \'got\'"
+		c.execute('CREATE TABLE got (\
+				character text,\
+				house text,\
+				quote text )')
+		
+		print "Successfully created table \'got\'"
+	conn.commit()
+	conn.close()
 
 class Application(tornado.web.Application):
 	def __init__(self):
@@ -20,6 +40,9 @@ class Application(tornado.web.Application):
 		tornado.web.Application.__init__(self, handlers)
 	
 def main():
+	# verify the database and it's fields
+	verifyDatabase()
+	
 	app = Application()
 	app.listen(80)
 	IOLoop.instance().start()
