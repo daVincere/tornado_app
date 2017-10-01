@@ -30,8 +30,13 @@ def verifyDatabase():
 	conn.close()
 
 class GotQuoter(tornado.web.RequestHandler):
-	def get(self):
-		self.write("GET - Welcome to GOT Quoter")
+	def get(self, id):
+		response = {
+			'id': int(id),
+			'name': 'Crazy quotes',
+			'release_date': date.today().isoformat()
+			}
+		self.write(response)
 
 	def post(self):
 		self.write("POST - Welcome to GOT Quoter")
@@ -44,7 +49,7 @@ class Application(tornado.web.Application):
 			(r"/?", MainHandler), 
 			#at the url / main handler is called
 			(r"/api/quotes/?", GotQuoter),
-			(r"/api/quotes/[0-9][0-9][0-9][0-9]/?", GotQuoter),
+			(r"/api/quotes/[0-9]+/?", GotQuoter),
 			]
 		
 		tornado.web.Application.__init__(self, handlers)
